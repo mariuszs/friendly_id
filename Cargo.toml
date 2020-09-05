@@ -1,0 +1,13 @@
+[package]
+name = "friendly_id"
+version = "0.1.0"
+authors = ["Mariusz Smykula <mariuszs@gmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+description = "The FriendlyID library converts a given UUID to a URL-friendly ID which is based on Base62"
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+uuid = { version = "0.8.1", features = ["v4"] }
