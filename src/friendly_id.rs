@@ -1,4 +1,5 @@
 use uuid::Uuid;
+
 use crate::base62;
 
 pub fn create() -> String {
@@ -19,20 +20,21 @@ pub fn decode(id: String) -> Uuid {
 
 #[cfg(test)]
 mod tests {
-    use crate::friendly_id::*;
+    use uuid::Uuid;
+    use crate::friendly_id;
 
     #[test]
     fn test_decode() {
-        assert_eq!(decode("5wbwf6yUxVBcr48AMbz9cb".to_string()), Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5").unwrap());
+        assert_eq!(friendly_id::decode("5wbwf6yUxVBcr48AMbz9cb".to_string()), Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5").unwrap());
     }
 
     #[test]
     fn test_create() {
-        assert!(create().len() > 1);
+        assert!(friendly_id::create().len() > 1);
     }
 
     #[test]
     fn test_encode() {
-        assert_eq!(encode(&Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5").unwrap()), "5wbwf6yUxVBcr48AMbz9cb");
+        assert_eq!(friendly_id::encode(&Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5").unwrap()), "5wbwf6yUxVBcr48AMbz9cb");
     }
 }

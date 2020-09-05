@@ -71,27 +71,27 @@ pub fn decode(string: &str) -> Result<u128, DecodeError> {
 
 #[cfg(test)]
 mod tests {
-    use crate::base62::*;
+    use crate::base62;
 
     #[test]
     fn test_encode() {
-        assert_eq!(encode(852751187393), "F0ob4rZ");
+        assert_eq!(base62::encode(852751187393), "F0ob4rZ");
     }
 
     #[test]
     fn test_decode() {
-        assert_eq!(decode("F0ob4rZ").unwrap(), 852751187393);
+        assert_eq!(base62::decode("F0ob4rZ").unwrap(), 852751187393);
     }
 
     #[test]
     fn test_decode_invalid_char() {
-        assert!(decode("ds{Z455f").is_err());
+        assert!(base62::decode("ds{Z455f").is_err());
     }
 
 
     #[test]
     fn test_decode_long_string() {
-        assert!(decode("dsZ455fzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\
+        assert!(base62::decode("dsZ455fzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\
                                 zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
             .is_err());
     }
