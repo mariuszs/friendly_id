@@ -1,4 +1,4 @@
-pub use self::friendly_id::{encode, decode};
+pub use self::friendly_id::{create, encode, decode};
 mod base62;
 mod friendly_id;
 

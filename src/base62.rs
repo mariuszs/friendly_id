@@ -71,8 +71,6 @@ pub fn decode(string: &str) -> Result<u128, DecodeError> {
 
 #[cfg(test)]
 mod tests {
-    // use base62;
-
     use crate::base62::*;
 
     #[test]
