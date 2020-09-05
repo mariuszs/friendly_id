@@ -5,7 +5,8 @@ authors = ["Mariusz Smykula <mariuszs@gmail.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
 description = "The FriendlyID library converts a given UUID to a URL-friendly ID which is based on Base62"
-
+homepage = "https://github.com/Devskiller/friendly-id"
+repository = "https://github.com/mariuszs/friendly_id"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
