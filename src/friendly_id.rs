@@ -5,9 +5,10 @@ use crate::error::DecodeError;
 
 ///
 /// Create FriendlyID id
+///
 /// # Examples
 ///
-/// ```
+/// ```rust
 /// let result = friendly_id::create();
 ///
 /// "5wbwf6yUxVBcr48AMbz9cb";
@@ -21,12 +22,16 @@ pub fn create() -> String {
 ///
 /// Encode UUID to FriendlyID id
 ///
-/// ```
+/// # Examples
+///
+/// ```rust
 /// let uuid = uuid::Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5").unwrap();
 /// friendly_id::encode(&uuid);
 ///
 /// "5wbwf6yUxVBcr48AMbz9cb";
 /// ```
+///
+///
 ///
 pub fn encode(uuid: &Uuid) -> String {
     let data = uuid.as_u128();
@@ -37,7 +42,8 @@ pub fn encode(uuid: &Uuid) -> String {
 ///
 /// Decode FriendlyID id to UUID
 ///
-/// ```
+/// # Examples
+/// ```rust
 /// friendly_id::decode("5wbwf6yUxVBcr48AMbz9cb");
 ///
 /// "c3587ec5-0976-497f-8374-61e0c2ea3da5";
