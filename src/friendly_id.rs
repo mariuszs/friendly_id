@@ -15,13 +15,10 @@ pub fn encode(uuid: &Uuid) -> String {
 }
 
 pub fn decode(id: String) -> Result<Uuid, DecodeError> {
-    let result = match base62::decode(id.as_str()) {
-        Ok(base62) => Uuid::from_u128(base62),
-        Err(e) => {
-            return Err(e);
-        }
+    match base62::decode(id.as_str()) {
+        Ok(base62) => return Ok(Uuid::from_u128(base62)),
+        Err(e) => return Err(e)
     };
-    return Ok(result);
 }
 
 #[cfg(test)]
@@ -40,7 +37,8 @@ mod tests {
     fn test_decode_invalid_value() {
         let result = friendly_id::decode("5+".to_string());
         assert!(result.is_err());
-        println!("{}", result.unwrap_err().to_string())
+        let error = result.unwrap_err();
+        println!("{}", error.to_string());
     }
 
     #[test]
