@@ -1,6 +1,7 @@
 use uuid::Uuid;
 
 use crate::base62;
+use crate::error::DecodeError;
 
 pub fn create() -> String {
     let uuid = Uuid::new_v4();
@@ -13,19 +14,33 @@ pub fn encode(uuid: &Uuid) -> String {
     return base62.to_string();
 }
 
-pub fn decode(id: String) -> Uuid {
-    let decode_base62 = base62::decode(id.as_str()).expect("Invalid id");
-    return Uuid::from_u128(decode_base62);
+pub fn decode(id: String) -> Result<Uuid, DecodeError> {
+    let result = match base62::decode(id.as_str()) {
+        Ok(base62) => Uuid::from_u128(base62),
+        Err(e) => {
+            return Err(e);
+        }
+    };
+    return Ok(result);
 }
 
 #[cfg(test)]
 mod tests {
     use uuid::Uuid;
+
     use crate::friendly_id;
 
     #[test]
     fn test_decode() {
-        assert_eq!(friendly_id::decode("5wbwf6yUxVBcr48AMbz9cb".to_string()), Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5").unwrap());
+        assert_eq!(friendly_id::decode("5wbwf6yUxVBcr48AMbz9cb".to_string()).unwrap(),
+                   Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5").unwrap());
+    }
+
+    #[test]
+    fn test_decode_invalid_value() {
+        let result = friendly_id::decode("5+".to_string());
+        assert!(result.is_err());
+        println!("{}", result.unwrap_err().to_string())
     }
 
     #[test]

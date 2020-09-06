@@ -1,5 +1,8 @@
-use std::fmt;
-pub use self::DecodeError::*;
+
+// Based on code from https://github.com/fbernier/base62
+
+use crate::error::DecodeError;
+use crate::error::DecodeError::{ArithmeticOverflow, InvalidBase62Byte};
 
 const BASE: u128 = 62;
 const ALPHABET: [u8; BASE as usize] = [b'0', b'1', b'2', b'3', b'4', b'5', b'6', b'7', b'8', b'9',
@@ -23,28 +26,6 @@ pub fn encode(mut num: u128) -> String {
     bytes.reverse();
 
     String::from_utf8(bytes).unwrap()
-}
-
-pub enum DecodeError {
-    InvalidBase62Byte(char, usize),
-    ArithmeticOverflow,
-}
-
-impl fmt::Debug for DecodeError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            InvalidBase62Byte(ch, idx) => {
-                write!(f, "Invalid character '{}' at position {}", ch, idx)
-            }
-            ArithmeticOverflow => write!(f, "Decode result is too large"),
-        }
-    }
-}
-
-impl fmt::Display for DecodeError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Debug::fmt(&self, f)
-    }
 }
 
 pub fn decode(string: &str) -> Result<u128, DecodeError> {
@@ -86,6 +67,7 @@ mod tests {
     #[test]
     fn test_decode_invalid_char() {
         assert!(base62::decode("ds{Z455f").is_err());
+        println!("{}", base62::decode("ds{Z455f").unwrap_err());
     }
 
 
