@@ -50,4 +50,5 @@ mod tests {
     fn test_encode() {
         assert_eq!(friendly_id::encode(&Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5").unwrap()), "5wbwf6yUxVBcr48AMbz9cb");
     }
+
 }
