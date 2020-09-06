@@ -8,7 +8,7 @@ description = "The FriendlyID library converts a given UUID to a URL-friendly ID
 homepage = "https://github.com/Devskiller/friendly-id"
 repository = "https://github.com/mariuszs/friendly_id"
 readme = "README.md"
-keywords = ["base62", "encoding", "decoding", "url", "shortener", "uuid", "url62"]
+keywords = ["base62", "id", "shortener", "uuid", "url62"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
