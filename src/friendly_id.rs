@@ -22,8 +22,8 @@ pub fn create() -> String {
 /// Encode UUID to FriendlyID id
 ///
 /// ```
-/// let uuid = uuid::Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5");
-/// friendly_id::encode(&uuid.unwrap());
+/// let uuid = uuid::Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5").unwrap();
+/// friendly_id::encode(&uuid);
 ///
 /// "5wbwf6yUxVBcr48AMbz9cb";
 /// ```
@@ -44,7 +44,7 @@ pub fn encode(uuid: &Uuid) -> String {
 /// ```
 ///
 pub fn decode(id: &str) -> Result<Uuid, DecodeError> {
-    match base62::decode(id.as_str()) {
+    match base62::decode(id) {
         Ok(base62) => return Ok(Uuid::from_u128(base62)),
         Err(e) => return Err(e)
     };
@@ -77,7 +77,7 @@ mod tests {
 
     #[test]
     fn test_encode() {
-        let uuid = Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5");
-        assert_eq!(friendly_id::encode(&uuid.unwrap()), "5wbwf6yUxVBcr48AMbz9cb");
+        let uuid = Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5").unwrap();
+        assert_eq!(friendly_id::encode(&uuid), "5wbwf6yUxVBcr48AMbz9cb");
     }
 }
