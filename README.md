@@ -1,5 +1,6 @@
 [![Version](https://img.shields.io/crates/v/friendly_id.svg)](https://crates.io/crates/friendly_id)
 [![Docs](https://docs.rs/friendly_id/badge.svg)](https://docs.rs/friendly_id)
+[![Build Status](https://travis-ci.com/mariuszs/friendly_id.svg?branch=master)](https://travis-ci.com/mariuszs/friendly_id)
 
 FriendlyID Rust library
 ==
