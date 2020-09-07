@@ -4,14 +4,23 @@ use crate::base62;
 use crate::error::DecodeError;
 
 ///
-/// Create FriendlyID id
+/// Creates FriendlyID id
+///
+/// Creates FriendlyId id basing on a random UUID v4.
+///
+/// Note that usage of this method requires the `v4` feature of this UUID crate
+/// to be enabled.
 ///
 /// # Examples
 ///
+/// Basic usage:
+///
 /// ```rust
+/// use friendly_id;
+///
 /// let result = friendly_id::create();
 ///
-/// "5wbwf6yUxVBcr48AMbz9cb";
+/// // "5wbwf6yUxVBcr48AMbz9cb";
 /// ```
 ///
 pub fn create() -> String {
@@ -24,11 +33,16 @@ pub fn create() -> String {
 ///
 /// # Examples
 ///
-/// ```rust
-/// let uuid = uuid::Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5").unwrap();
-/// friendly_id::encode(&uuid);
+/// Basic usage:
 ///
-/// "5wbwf6yUxVBcr48AMbz9cb";
+/// ```rust
+/// use friendly_id;
+///
+/// let uuid = uuid::Uuid::parse_str("c3587ec5-0976-497f-8374-61e0c2ea3da5").unwrap();
+///
+/// let id = friendly_id::encode(&uuid);
+///
+/// // "5wbwf6yUxVBcr48AMbz9cb";
 /// ```
 ///
 ///
@@ -43,10 +57,15 @@ pub fn encode(uuid: &Uuid) -> String {
 /// Decode FriendlyID id to UUID
 ///
 /// # Examples
-/// ```rust
-/// friendly_id::decode("5wbwf6yUxVBcr48AMbz9cb");
 ///
-/// "c3587ec5-0976-497f-8374-61e0c2ea3da5";
+/// Basic usage:
+///
+/// ```rust
+/// use friendly_id;
+///
+/// let uuid = friendly_id::decode("5wbwf6yUxVBcr48AMbz9cb").expect("Invalid id");
+///
+/// // "c3587ec5-0976-497f-8374-61e0c2ea3da5";
 /// ```
 ///
 pub fn decode(id: &str) -> Result<Uuid, DecodeError> {
