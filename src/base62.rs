@@ -1,58 +1,61 @@
-
 // Based on code from https://github.com/fbernier/base62
 
 use crate::error::DecodeError;
 use crate::error::DecodeError::{ArithmeticOverflow, InvalidBase62Byte};
 
 const BASE: u128 = 62;
-const ALPHABET: [u8; BASE as usize] = [b'0', b'1', b'2', b'3', b'4', b'5', b'6', b'7', b'8', b'9',
-    b'A', b'B', b'C', b'D', b'E', b'F', b'G', b'H', b'I', b'J',
-    b'K', b'L', b'M', b'N', b'O', b'P', b'Q', b'R', b'S', b'T',
-    b'U', b'V', b'W', b'X', b'Y', b'Z', b'a', b'b', b'c', b'd',
-    b'e', b'f', b'g', b'h', b'i', b'j', b'k', b'l', b'm', b'n',
-    b'o', b'p', b'q', b'r', b's', b't', b'u', b'v', b'w', b'x',
-    b'y', b'z'];
+const ALPHABET: &[u8; 62] = b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-pub fn encode(mut num: u128) -> String {
+const DECODE_MAP: [u8; 256] = {
+    let mut map = [u8::MAX; 256];
+    let mut i = 0usize;
+    while i < 62 {
+        #[allow(clippy::cast_possible_truncation)]
+        { map[ALPHABET[i] as usize] = i as u8; }
+        i += 1;
+    }
+    map
+};
+
+pub(crate) fn encode(mut num: u128) -> String {
     if num == 0 {
         return "0".to_owned();
     }
-    let mut bytes = Vec::new();
-
+    let mut buf = [0u8; 22];
+    let mut pos = 22usize;
     while num > 0 {
-        bytes.push(ALPHABET[(num % BASE) as usize]);
-        num /= BASE
+        pos -= 1;
+        buf[pos] = ALPHABET[(num % BASE) as usize];
+        num /= BASE;
     }
-    bytes.reverse();
-
-    String::from_utf8(bytes).unwrap()
+    std::str::from_utf8(&buf[pos..]).unwrap().to_owned()
 }
 
-pub fn decode(string: &str) -> Result<u128, DecodeError> {
-    let mut result = 0;
+pub(crate) fn decode(string: &str) -> Result<u128, DecodeError> {
+    let mut result: u128 = 0;
+    let mut power: u128 = 1;
 
     for (i, c) in string.as_bytes().iter().rev().enumerate() {
-        let num = BASE.pow(i as u32);
-        match ALPHABET.binary_search(c) {
-            Ok(v) => {
-                match (v as u128).checked_mul(num) {
-                    Some(z) => result += z,
-                    None => return Err(ArithmeticOverflow),
-                }
-            }
-            Err(_e) => {
-                return Err(InvalidBase62Byte(c.to_owned() as char, string.len() - i));
-            }
+        if i > 0 {
+            power = power.checked_mul(BASE).ok_or(ArithmeticOverflow)?;
         }
+        let idx = DECODE_MAP[*c as usize];
+        if idx == u8::MAX {
+            return Err(InvalidBase62Byte(*c as char, string.len() - i));
+        }
+        let z = u128::from(idx)
+            .checked_mul(power)
+            .ok_or(ArithmeticOverflow)?;
+        result = result.checked_add(z).ok_or(ArithmeticOverflow)?;
     }
 
     Ok(result)
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::base62;
+    use crate::error::DecodeError;
 
     #[test]
     fn test_encode() {
@@ -66,15 +69,17 @@ mod tests {
 
     #[test]
     fn test_decode_invalid_char() {
-        assert!(base62::decode("ds{Z455f").is_err());
-        println!("{}", base62::decode("ds{Z455f").unwrap_err());
+        let result = base62::decode("ds{Z455f");
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), DecodeError::InvalidBase62Byte('{', 3));
     }
-
 
     #[test]
     fn test_decode_long_string() {
-        assert!(base62::decode("dsZ455fzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\
-                                zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
-            .is_err());
+        let result = base62::decode(
+            "dsZ455fzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\
+             zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+        );
+        assert_eq!(result.unwrap_err(), DecodeError::ArithmeticOverflow);
     }
 }
