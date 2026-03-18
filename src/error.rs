@@ -1,11 +1,9 @@
-use failure::Fail;
+use thiserror::Error;
 
-pub use self::DecodeError::*;
-
-#[derive(Fail, Debug)]
+#[derive(Error, Debug)]
 pub enum DecodeError {
-    #[fail(display = "Invalid character '{}' at position {}", _0, _1)]
+    #[error("Invalid character '{0}' at position {1}")]
     InvalidBase62Byte(char, usize),
-    #[fail(display = "Decode result is too large")]
-    ArithmeticOverflow
+    #[error("Decode result is too large")]
+    ArithmeticOverflow,
 }
